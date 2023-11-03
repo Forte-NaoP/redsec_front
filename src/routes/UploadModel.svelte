@@ -26,6 +26,7 @@
             "post", url, formData,
             (json) => {
                 alert("File uploaded successfully!");
+                push('/dashboard');
             },
             (error) => {
                 alert("File upload failed: " + JSON.stringify(error));
@@ -36,7 +37,7 @@
 </script>
 
 <div class="container">
-    <h5 class="my-3 border-bottom pb-2">질문 등록</h5>
+    <h5 class="my-3 border-bottom pb-2">모델 업로드</h5>
     <Error error={error} />
     <form method="post" class="my-3">
         <div class="mb-3">

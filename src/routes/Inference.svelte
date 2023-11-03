@@ -27,7 +27,7 @@
         fastapi(
             "post", url, formData,
             (json) => {
-                alert(JSON.stringify(json));
+                alert(json.result);
             },
             (error) => {
                 alert("File upload failed: " + JSON.stringify(error));
@@ -38,7 +38,7 @@
 </script>
 
 <div class="container">
-    <h5 class="my-3 border-bottom pb-2">질문 등록</h5>
+    <h5 class="my-3 border-bottom pb-2">추론 요청</h5>
     <Error error={error} />
     <form method="post" class="my-3">
         <div class="mb-3">
