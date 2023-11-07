@@ -159,7 +159,9 @@
                 {#if history.pending}
                     <div>File : Pending...</div>
                 {:else}
-                    File : <a use:link href="/model/{model_uuid}/history" on:click|preventDefault={() => infernce_download(history.file_name)}> {history.file_name}</a>
+                    Input : <a use:link href="/model/{model_uuid}/history" on:click|preventDefault={() => infernce_download(history.file_name+'_input')}> {history.file_name+'_input'}</a>
+                    <br>
+                    Result : <a use:link href="/model/{model_uuid}/history" on:click|preventDefault={() => infernce_download(history.file_name+'_output')}> {history.file_name+'_output'}</a>
                 {/if}
             </div>
         </div>

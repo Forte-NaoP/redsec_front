@@ -4,23 +4,35 @@
     import Error from "../components/Error.svelte"
 
     let error = {detail:[]}
-    let fileInput;
+    let model, weight, parms, galois_key, relin_key, pub_key;
+    let fileInputs = {"model": model, "weight": weight, "ckks_parms": parms, "galois_key": galois_key, "relin_key": relin_key, "pub_key": pub_key};
     let name = "";
+    let files = {};
+
+    function handleFileChange(event, key) {
+        files[key] = event.target.files[0];
+    }
 
     function handleSubmit() {
         event.preventDefault()
         let url = "/api/model/upload"
 
-        if (!fileInput.files[0]) {
-            alert("Please select a file.");
+        if (name === "") {
+            alert("제목을 입력해 주세요.");
+            return;
+        }
+
+        let allFilesSelected = Object.keys(fileInputs).every(key => files[key] && files[key].size > 0);
+        if (!allFilesSelected) {
+            alert("모든 파일을 선택해 주세요.");
             return;
         }
 
         const formData = new FormData();
         formData.append("name", name);
-        for(let i = 0; i < fileInput.files.length; i++) {
-            formData.append("files", fileInput.files[i]);
-        }
+        Object.keys(files).forEach(key => {
+            formData.append(key, files[key]);
+        });
 
         fastapi(
             "post", url, formData,
@@ -41,13 +53,17 @@
     <Error error={error} />
     <form method="post" class="my-3">
         <div class="mb-3">
-            <label for="name">제목</label>
+            <label for="name">모델 이름: </label>
             <input type="text" bind:value={name} />
         </div>
-        <div class="mb-3">
-            <label for="content">내용</label>
-            <input type="file" bind:this={fileInput} multiple/>
-        </div>
+
+        {#each Object.entries(fileInputs) as [key, value]}
+            <div class="mb-3">
+                <label for="{key}">{key}: </label>
+                <input type="file" id="{key}" on:change="{event => handleFileChange(event, key)}" />
+            </div>
+        {/each}
+
         <button class="btn btn-primary" on:click="{handleSubmit}">저장하기</button>
     </form>
 </div>
