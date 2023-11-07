@@ -49,7 +49,6 @@ const fastapi = (operation, url, params, success_callback, failure_callback) => 
             }
 
             const contentType = response.headers.get("Content-Type")
-
             if(contentType && contentType.includes("application/json")) {
                 response.json()
                     .then(json => {
@@ -74,14 +73,22 @@ const fastapi = (operation, url, params, success_callback, failure_callback) => 
                     .catch(error => {
                         alert(JSON.stringify(error))
                     })
-            } else if (contentType && contentType.includes("application/")) {
+            } else if (contentType && contentType.includes("application/") || contentType.includes("image/")) {
+                const contentDisposition = response.headers.get("Content-Disposition");
+                let filename = contentDisposition && /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                if (filename && filename[1]) { 
+                    filename = filename[1].replace(/['"]/g, '');
+                } else {
+                    filename = "download"
+                }
+
                 const ext = contentType.split("/")[1]
                 response.blob()
                     .then(blob => {
                         const downloadUrl = URL.createObjectURL(blob);
                         const a = document.createElement("a");
                         a.href = downloadUrl;
-                        a.download = "redsec_client."+ext;
+                        a.download = filename;
                         document.body.appendChild(a);
                         a.click();
                         a.remove();
